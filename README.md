@@ -2,9 +2,6 @@
 
 **ChirpCatch** is a lightweight [Tampermonkey](https://www.tampermonkey.net/documentation.php) userscript that enables you to easily download any media—such as videos or images—embedded in tweets on Twitter (now known as X).
 
-Due to the randomness of X's React tree, 
-downloaded media will currently appear just below the corresponding tweet for easier access.
-
 Currently the term "downloading" means it will open the media in a new tab that you can
 right click to save. I will come up with a new solution soon.
 
