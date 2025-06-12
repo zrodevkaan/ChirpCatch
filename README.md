@@ -10,6 +10,10 @@ right click to save. I will come up with a new solution soon.
 
 ChirpCatch plans to add more features so ***please*** do suggest anything you may find interesting or useful!
 
+# How to use?
+Simple download button on ANY media :>
+![](assets/image.png)
+
 ## Credits
 
 The `findInTree` utility used in this script is adapted from  
