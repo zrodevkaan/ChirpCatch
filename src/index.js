@@ -91,7 +91,6 @@ const MediaDownloadButtons = ({medias, webpack}) => {
     GlobalPatcher.patch(TweetComponent[0].exports.Z, 'render', (original, arg1, arg2) => {
         if (arg1.testID === "tweet") {
             const dataStart = arg1.children[0][1].props.children;
-            console.log(dataStart)
             const data = findInTree(dataStart, x => x?.color || x?.tweet || x?.entities, {walkable: ['props', 'children', 'entities', 'media', 'tweet']});
             const medias = data.entities.media;
 
