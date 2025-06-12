@@ -8,7 +8,7 @@ downloaded media will currently appear just below the corresponding tweet for ea
 Currently the term "downloading" means it will open the media in a new tab that you can
 right click to save. I will come up with a new solution soon.
 
-ChipCatch plans to add more features so ***please*** do suggest anything you may find interesting or useful!
+ChirpCatch plans to add more features so ***please*** do suggest anything you may find interesting or useful!
 
 ## Credits
 

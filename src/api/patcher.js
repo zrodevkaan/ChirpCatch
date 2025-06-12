@@ -18,7 +18,11 @@ export class Patcher {
             const result = original.apply(this, args);
 
             try {
-                afterFunc.call(this, result, ...args);
+                const afterResult = afterFunc.call(this, result, ...args);
+
+                if (afterResult !== undefined) {
+                    return afterResult;
+                }
             } catch (error) {
                 console.error('Error in after patch:', error);
             }
