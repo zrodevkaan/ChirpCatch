@@ -2,7 +2,7 @@ import {build} from 'esbuild';
 
 const USERSCRIPT_HEADER = `// ==UserScript==
 // @name         ChirpCatch
-// @version      1.0.1
+// @version      1.0.2
 // @description  Download any Media from any tweet.
 // @namespace    https://twitter.com/*
 // @namespace    https://x.com/*
