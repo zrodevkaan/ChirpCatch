@@ -36,6 +36,9 @@ export function findInTree(tree, searchFilter, {walkable = null, ignore = []} = 
 
 export function returnRelevantData(media) {
     switch (media.type) {
+        case 'animated_gif':
+            // Are we serious Elon Musk?
+            return media.video_info.variants[media.video_info.variants.length - 1].url;
         case 'video':
             // Return highest quality video variant
             return media.video_info.variants[media.video_info.variants.length - 1].url;

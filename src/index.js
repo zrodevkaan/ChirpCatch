@@ -92,12 +92,14 @@ const MediaDownloadButtons = ({medias, webpack}) => {
         if (arg1.testID === "tweet") {
             const dataStart = arg1.children[0][1].props.children;
             const data = findInTree(dataStart, x => x?.color || x?.tweet || x?.entities, {walkable: ['props', 'children', 'entities', 'media', 'tweet']});
-            const medias = data.entities.media;
+            const medias = data.entities.media || [];
+            const extendedMedia = data.extended_entities?.media || [];
+            const allMedias = [...medias, ...extendedMedia];
 
             if (dataStart.find(x => x?.key === "balls")) return;
 
             const buttonContainer = MediaDownloadButtons({
-                medias,
+                medias: allMedias,
                 webpack
             });
 
