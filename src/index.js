@@ -1,116 +1,106 @@
-import {initWebpack, __webpack__} from './webpack/require'
-import {Webpack} from "./webpack";
+import {initWebpack, __webpack__, webpackInstance} from './webpack/require'
 
 import {Logger} from "./api/logger";
 import {Patcher} from "./api/patcher";
+import {downloadIcon} from "./components/svgs";
 
 const ChirpCatchLog = new Logger('ChirpCatch');
 const GlobalPatcher = new Patcher('GlobalPatcher');
+
+const createButtonContainer = (children) => {
+    return webpackInstance.React.createElement("div", {
+        style: {
+            position: "absolute",
+            display: "flex",
+            gap: "4px",
+            background: 'black',
+            borderRadius: '4px',
+            left: 10,
+            top: 10
+        }
+    }, children);
+}
+
+const createButton = (onClick, icon, backgroundColor = "black") => {
+    return webpackInstance.React.createElement("div", {
+        style: {
+            backgroundColor,
+            border: `1px solid hsl(var(--border))`,
+            borderColor: "hsl(var(--border))",
+            borderRadius: '4px',
+            padding: 4,
+            cursor: 'pointer',
+        },
+        onClick,
+    }, icon);
+}
 
 (async () => {
     ChirpCatchLog.info('Injecting Webpack');
     await initWebpack();
     ChirpCatchLog.success('Injected Webpack');
 
-    const webpack = new Webpack();
+    unsafeWindow['capi'] = webpackInstance; // Exposed for future pr/development. Feel free :)
 
-    unsafeWindow['capi'] = webpack;
+    const VideoComponentMaybe = await webpackInstance.waitForSearch('.controls.isPosterShown))')
+    const ImageComponent = await webpackInstance.waitForSearch("Image.style.resizeMode")
 
-    const VideoComponentMaybe = await webpack.waitForSearch('.controls.isPosterShown))')
-    const ImageComponent = await webpack.waitForSearch("Image.style.resizeMode")
+    const ViewComponent = await webpackInstance.search('["hrefAttrs"')
+
+    GlobalPatcher.patch(ViewComponent[0].exports.Z, 'render', (res, data) => {
+        if (data.role === "main") {
+            //return [res, Settings({res})];
+        }
+        return res;
+    })
 
     GlobalPatcher.patch(VideoComponentMaybe[0].exports, 'Z', (res, data) => {
-        return [res, webpack.React.createElement("div", {
-            style: {
-                position: "absolute",
-                backgroundColor: "black",
-                border: `1 solid hsl(var(--border))`,
-                borderColor: "hsl(var(--border))",
-                borderRadius: '4px',
-                borderWidth: '1px',
-                padding: 4,
-                left: 10,
-                top: 10
+        const list = data.playerState.tracks?.[0]?.variants;
+        const videoUrl = list?.[list?.length - 1].src;
+
+        const downloadButton = createButton(
+            (e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                window.open(videoUrl, '_blank');
             },
-            onClick: (e) => {
-                e.stopPropagation()
-                e.preventDefault()
-                const list = data.playerState.tracks[0].variants
-                window.open(list[list.length - 1].src, '_blank'); // Highest Quality Video.
-            }
-        }, webpack.React.createElement('div', {title: 'Download'}, webpack.React.createElement('svg', {
-            width: '16',
-            height: '16',
-            viewBox: '0 0 24 24',
-            fill: 'none',
-            stroke: 'currentColor',
-            strokeWidth: '2',
-            strokeLinecap: 'round',
-            strokeLinejoin: 'round'
-        }, [
-            webpack.React.createElement('path', {
-                key: 'arrow',
-                d: 'M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4'
-            }),
-            webpack.React.createElement('polyline', {
-                key: 'line',
-                points: '7,10 12,15 17,10'
-            }),
-            webpack.React.createElement('line', {
-                key: 'stem',
-                x1: '12',
-                y1: '15',
-                x2: '12',
-                y2: '3'
-            })
-        ])))]
+            downloadIcon()
+        );
+
+        /*const copyButton = createButton(
+            (e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                copyToClipboard(videoUrl);
+            },
+            copyIcon(),
+        );*/
+
+        return [res, createButtonContainer([downloadButton, /*copyButton*/])];
     })
 
     GlobalPatcher.patch(ImageComponent[0].exports.Z, 'render', (res, data) => {
         if (data.source.includes('profile_images') || data.source.includes('amplify_video_thumb')) return res
+        // user pfps use this component and pre video loads.
 
-        return [res, webpack.React.createElement("div", {
-            style: {
-                position: "absolute",
-                backgroundColor: "black",
-                border: `1 solid hsl(var(--border))`,
-                borderColor: "hsl(var(--border))",
-                borderRadius: '4px',
-                borderWidth: '1px',
-                padding: 4,
-                left: 10,
-                top: 10
-            },
-            onClick: (e) => {
-                e.stopPropagation()
-                e.preventDefault()
+        const downloadButton = createButton(
+            (e) => {
+                e.stopPropagation();
+                e.preventDefault();
                 window.open(data.source, '_blank');
-            }
-        }, webpack.React.createElement('div', {title: 'Download'}, webpack.React.createElement('svg', {
-            width: '16',
-            height: '16',
-            viewBox: '0 0 24 24',
-            fill: 'none',
-            stroke: 'currentColor',
-            strokeWidth: '2',
-            strokeLinecap: 'round',
-            strokeLinejoin: 'round'
-        }, [
-            webpack.React.createElement('path', {
-                key: 'arrow',
-                d: 'M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4'
-            }),
-            webpack.React.createElement('polyline', {
-                key: 'line',
-                points: '7,10 12,15 17,10'
-            }),
-            webpack.React.createElement('line', {
-                key: 'stem',
-                x1: '12',
-                y1: '15',
-                x2: '12',
-                y2: '3'
-            })
-        ])))]
+            },
+            downloadIcon()
+        );
+
+        /*const copyButton = createButton(
+            (e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                copyToClipboard(data.source);
+            },
+            copyIcon(),
+        );*/
+
+        return [res, createButtonContainer([downloadButton, /*copyButton*/])]; // Add back when settings exist.
     })
-})();
+})()

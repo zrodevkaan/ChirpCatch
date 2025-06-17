@@ -57,36 +57,7 @@ export class Webpack {
         });
     }
 
-    find(filters) {
-        const results = [];
-        for (const [id, mod] of Object.entries(this.require.m)) {
-            try {
-                const moduleData = {
-                    id,
-                    mod,
-                    exports: this.modules[id]?.exports,
-                    content: mod.toString()
-                };
-
-                const matches = Object.entries(filters).every(([key, filter]) => {
-                    if (typeof filter === 'function') {
-                        return filter(moduleData[key], moduleData);
-                    }
-                    if (typeof filter === 'string') {
-                        return moduleData[key]?.toString().includes(filter);
-                    }
-                    if (filter instanceof RegExp) {
-                        return filter.test(moduleData[key]?.toString());
-                    }
-                    return moduleData[key] === filter;
-                });
-
-                if (matches) {
-                    results.push(moduleData);
-                }
-            } catch (e) {
-            }
-        }
-        return results;
+    find(filter) {
+       return Object.values(this.modules).find(filter);
     }
 }

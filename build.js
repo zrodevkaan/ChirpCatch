@@ -28,7 +28,9 @@ async function buildUserscript() {
                 js: USERSCRIPT_HEADER,
             },
             loader: {
-                '.js': 'js',
+                '.js': 'jsx',
+                '.jsx': 'jsx',
+                '.tsx': 'tsx',
             },
             logLevel: 'info',
             minify: false,
