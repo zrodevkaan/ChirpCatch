@@ -1,4 +1,4 @@
-import {initWebpack, __webpack__, webpackInstance} from './webpack/require'
+import {initWebpack, webpackInstance} from './webpack/require'
 
 import {Logger} from "./api/logger";
 import {Patcher} from "./api/patcher";
@@ -37,7 +37,8 @@ const createButton = (onClick, icon, backgroundColor = "black") => {
 
 (async () => {
     ChirpCatchLog.info('Injecting Webpack');
-    await initWebpack();
+    const webpackYEs = await initWebpack();
+    ChirpCatchLog.debug(webpackYEs)
     ChirpCatchLog.success('Injected Webpack');
 
     unsafeWindow['capi'] = webpackInstance; // Exposed for future pr/development. Feel free :)

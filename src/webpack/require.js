@@ -1,4 +1,4 @@
-import {Webpack} from "./index";
+import { Webpack } from "./index";
 
 export let __webpack__;
 
@@ -21,30 +21,37 @@ export const webpackInstance = new Proxy({}, {
 });
 
 export async function initWebpack() {
-    return new Promise((resolve) => {
-        (unsafeWindow.webpackChunk_twitter_responsive_web ??= []).push([{some: () => true}, {}, r => {
-            __webpack__ = r;
-
-            r.d = (target, exports) => { // thanks doggy :)
-                for (const key in exports) {
-                    if (!Reflect.has(exports, key)) continue;
-
-                    Object.defineProperty(target, key, {
-                        get() {
-                            return exports[key]();
-                        },
-                        set(v) {
-                            exports[key] = () => v;
-                        },
-                        enumerable: true,
-                        configurable: true
-                    });
-                }
-            };
-
-            _webpackInstance = new Webpack();
-
-            resolve(r);
+  return new Promise((resolve) => {
+    const interval = setInterval(() => {
+      const wp = unsafeWindow.webpackChunk_twitter_responsive_web;
+      if (wp) {
+        let webpackRequire
+        wp.push([[Symbol("Arven")], {}, (e) => {
+          webpackRequire = e;
+          return e;
         }]);
-    });
+        
+        clearInterval(interval);
+
+        __webpack__ = webpackRequire;
+        webpackRequire.d = (target, exports) => {
+          for (const key in exports) {
+            if (!Reflect.has(exports, key)) continue;
+            Object.defineProperty(target, key, {
+              get() {
+                return exports[key]();
+              },
+              set(v) {
+                exports[key] = () => v;
+              },
+              enumerable: true,
+              configurable: true
+            });
+          }
+        };
+        _webpackInstance = new Webpack();
+        resolve(webpackRequire);
+      }
+    }, 10);
+  });
 }

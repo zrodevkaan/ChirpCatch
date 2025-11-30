@@ -1,4 +1,4 @@
-import {build} from 'esbuild';
+import { build } from 'esbuild';
 
 const USERSCRIPT_HEADER = `// ==UserScript==
 // @name         ChirpCatch
@@ -11,10 +11,10 @@ const USERSCRIPT_HEADER = `// ==UserScript==
 // @match        https://pro.twitter.com/*
 // @match        https://pro.x.com/*
 // @grant        GM.xmlHttpRequest
+// @grant        GM_xmlhttpRequest
 // @run-at       document-start
 // ==/UserScript==
 `;
-
 const OUTPUT_FILE = `./dist/chirpcatch.user.js`;
 
 async function buildUserscript() {
